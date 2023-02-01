@@ -1,1 +1,97 @@
-<a href="https://2d93-240e-34c-7110-95a0-7037-324-2932-b3a5.jp.ngrok.io/vv">论坛</a>
+
+<html>
+
+<head>
+    <meta name="code" content="OV9ksZ">
+    <style>
+        #mycanvas{
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="mycanvas" width="180" height="50"></canvas>
+    <p>输入验证码</p><input id="inp">
+    <button onclick="check()">确定
+    </button>
+
+    <script>
+        function rand(){
+            var str="abcdefghijklnopqrstuvxyz0123456789QERTYUIOPLKJHGFDSAZXCVBN12345678901234567890";
+            var arr=str.split("");
+            var validate="";
+            var ranNum;
+            for(var i=0;i<6;i++){
+                ranNum=Math.floor(Math.random()*str.length);
+                validate+=arr[ranNum];
+            }
+            return validate;
+        }
+        
+        /*干扰线的随机x坐标值*/
+        function lineX(){
+            var ranLineX=Math.floor(Math.random()*180);
+            return ranLineX;
+        }
+        
+        /*干扰线的随机y坐标值*/
+        function lineY(){
+            var ranLineY=Math.floor(Math.random()*50);
+            return ranLineY;
+        }
+        
+        function clickChange(){
+            var mycanvas=document.getElementById('mycanvas');
+          	  var colorlist=["#000","#00f","#0f0","#0ff","#f00","#f0f","#ff0","#fff"];
+            var cxt=mycanvas.getContext('2d');
+          	var a=Math.floor(Math.random()*8);
+            cxt.fillStyle=colorlist[a];
+            cxt.fillRect(0,0,180,50);
+          
+            cxt.fillStyle=colorlist[(7-a+8)%8];
+            cxt.font='bold 40px Arial';
+          		var tmp=rand();
+          document.getElementsByName("code")[0].content=tmp;
+            cxt.fillText(tmp,0,40); 
+            /*生成干扰线20条*/
+            for(var j=0;j<30;j++){
+                cxt.strokeStyle=colorlist[Math.floor(Math.random()*8)];
+                cxt.beginPath();    //若省略beginPath，则每点击一次验证码会累积干扰线的条数
+                cxt.moveTo(lineX(),lineY());
+                cxt.lineTo(lineX(),lineY());
+                cxt.lineWidth=0.5;
+                cxt.closePath();
+                cxt.stroke();
+            }
+        
+              //把rand()生成的随机数文本填充到canvas中      
+        }
+         		
+        clickChange();
+        		function check()
+        		{
+          			var tmp1=document.getElementsByName("code")[0].content;
+            var tmp2=document.getElementById("inp").value;
+            if(tmp1==tmp2)
+             {
+              alert("验证码正确!");  
+             }
+             else
+             {
+                 document.getElementById("inp").value="";
+                 alert("验证码错误");
+                 clickChange();
+             }
+        		}
+        /*点击验证码更换*/
+        mycanvas.onclick=function(e){
+            e.preventDefault();   //阻止鼠标点击发生默认的行为
+            clickChange();
+        };
+    </script>
+
+
+</body>
+
+</html>
